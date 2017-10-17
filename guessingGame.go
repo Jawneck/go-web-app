@@ -21,6 +21,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 //The main function begins with a call to http.HandleFunc.
 //It then calls http.ListenAndServe, specifying that it should listen on port 8080.
 func main() {
+    //http.HandleFunc("/", handler)
     http.Handle("/",  http.FileServer(http.Dir("./")))//serving index.html in the root directory.
     http.ListenAndServe(":8080", nil)
 }
