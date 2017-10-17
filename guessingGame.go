@@ -11,7 +11,9 @@ import (
 //A http.ResponseWriter assembles the HTTP server's response by writing to it.
 //A http.Request is a data structure that represents the client HTTP request.
 func handler(w http.ResponseWriter, r *http.Request) {
-    fmt.Fprintf(w, "Guessing game")
+
+    w.Header().Set("Content-Type","text/html")
+    fmt.Fprintln(w, "<h1>Guessing game</h1>")
 }
 
 //The main function begins with a call to http.HandleFunc.
