@@ -4,8 +4,10 @@
 package main
 
 import (
-//	"fmt"
+	"fmt"
 	"net/http"
+    "html/template"
+    "os"
 )
 
 //A http.ResponseWriter assembles the HTTP server's response by writing to it.
@@ -18,10 +20,20 @@ func handler(w http.ResponseWriter, r *http.Request) {
 }
 */
 
+type Template struct {
+    Message string
+}
+
 //The main function begins with a call to http.HandleFunc.
 //It then calls http.ListenAndServe, specifying that it should listen on port 8080.
 func main() {
     //http.HandleFunc("/", handler)
     http.Handle("/",  http.FileServer(http.Dir("./")))//serving index.html in the root directory.
     http.ListenAndServe(":8080", nil)
+
+     t := template.New("Template")
+     t, _ = t.Parse("<h2>Guess a number between 1 and 20</h2> {{.Message}}!")
+     t.Execute(os.Stdout)
+
+
 }
