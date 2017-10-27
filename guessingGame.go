@@ -8,6 +8,8 @@ import (
 	"net/http"
     "text/template"
     "strconv"
+    "time"
+    "math/rand"
 )
 
 //A http.ResponseWriter assembles the HTTP server's response by writing to it.
@@ -18,17 +20,21 @@ import (
     fmt.Fprintln(w, "<h1>Guessing game</h1>")
 }*/
 
+//A struct
 type Template struct {
     Message string
-    Count int
+    Count int 
+    Prompt string
+    Guess int
 }
 
 //Adapted from https://www.youtube.com/watch?v=GTSq1VPPFco&feature=youtu.be.
 func templateHandler(w http.ResponseWriter, r *http.Request){
-    t, _ := template.ParseFiles("template/guess.html")
-    t.Execute(w, Template{Message: "Guess a number between 1 and 20"})
 
-        i := 0
+        //Giving a random seed so that the same value is not generated every time.
+	    rand.Seed(time.Now().UnixNano())
+        //Generating a random int just like in part 5 of the first problem sheet.
+        i := rand.Intn(20)
     
         //Reading the cookie //Adapted from https://github.com/data-representation/go-cookies
         var target, err = r.Cookie("i")
@@ -36,14 +42,34 @@ func templateHandler(w http.ResponseWriter, r *http.Request){
             // converting the value to an int
             i, _ = strconv.Atoi(target.Value)
         }
-        i += 1
+
+    //Setting an expiration date of a year
+    expiration := time.Now().AddDate(1, 0, 0)
+    
 
     //Creating and setting a session cookie
 	target = &http.Cookie{
-		Name:    "i",
+        Name:    "i",
+        Expires: expiration,
 		Value:   strconv.Itoa(i),
 	}
-	http.SetCookie(w, target)
+    http.SetCookie(w, target)
+    
+
+    guess,_ := strconv.Atoi(r.FormValue("guess"))
+    prompt :=""
+    //An if else statement which compares the value of the guess to random number i 
+    if guess == i{
+        prompt ="Correct!"
+    }else if guess < i{
+        prompt="Guess higher"
+     }else {
+        prompt="Guess lower"
+    }
+
+
+    t, _ := template.ParseFiles("template/guess.html")//parsing the file and then executing the templates
+    t.Execute(w, Template{Message: "Guess a number between 1 and 20",Prompt:prompt})
 }
 
 //The main function begins with a call to http.Handle.

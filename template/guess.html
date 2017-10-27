@@ -15,15 +15,15 @@
 
    <!-- </div> -->
       
-      <form>
+      <form action="/guess" method="GET">
         <div id = "form">
           <label for="guess">guess: </label>
-          <input type="text" id="uname" name="name">
-        </div>
-        <div>
-          <button>Guess</button>
+          <input type="text" id="uname" name="guess">
+          <input type="submit" value="Guess">
         </div>
       </form>
+      
+      <h3>{{.Prompt}}</h3>
 
       <!--Creating a template in HTML called "Message", containing a single header line.
       <template id = "Message">
